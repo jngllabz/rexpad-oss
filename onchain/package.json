@@ -1,0 +1,2 @@
+{ "name": "rexpad-onchain", "private": true, "type": "module", "scripts": { "test": "node tests/e2e.mjs" },
+  "dependencies": { "@coral-xyz/anchor": "^0.31.1", "@solana/spl-token": "^0.4.9", "@solana/web3.js": "^1.98.0" } }

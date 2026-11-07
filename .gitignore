@@ -1,0 +1,9 @@
+node_modules/
+data/
+.DS_Store
+
+# Rust/Anchor build output. This tree also contains the program's DEPLOY KEYPAIR, which must never
+# be committed — a repo that carries it hands anyone the identity of the program.
+onchain/target/
+# generated share cards live in the data volume
+data/og/

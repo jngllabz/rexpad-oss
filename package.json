@@ -1,0 +1,25 @@
+{
+  "name": "forge-fun",
+  "version": "0.1.0",
+  "description": "FORGE — the fair launchpad. Fair Open sealed-batch launches + Conviction Yield for holders who hold.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "node server.mjs",
+    "dev": "SIM=1 EPOCH_MS=120000 CONVICTION_SCALE=120 PORT=5300 DATA_DIR=./data node server.mjs",
+    "test": "node tools/engine_test.mjs"
+  },
+  "dependencies": {
+    "@coral-xyz/anchor": "^0.31.1",
+    "@meteora-ag/cp-amm-sdk": "^1.5.1",
+    "@meteora-ag/dynamic-bonding-curve-sdk": "^1.5.13",
+    "@raydium-io/raydium-sdk-v2": "^0.2.70-alpha",
+    "@solana/spl-token": "^0.4.15",
+    "@solana/web3.js": "^1.99.0",
+    "bn.js": "^5.2.5",
+    "bs58": "^6.0.0",
+    "pureimage": "^0.4.20",
+    "tweetnacl": "^1.0.3",
+    "ws": "^8.18.0"
+  }
+}

@@ -1,0 +1,58 @@
+# What NOT to ship to the builder.
+#
+# ⛔ THERE WAS NO .dockerignore AT ALL, so every deploy uploaded 2.8 GB across 31,236 files — the
+# whole working tree, including 1.7 GB of Rust build artifacts the image never opens. Fly warns
+# about it and then uploads it anyway. It has already bitten a sibling repo: a 440 MB context once
+# crawled to the builder at 0.2 MB/s and the deploy had to be abandoned. A context this size is a
+# deploy that fails on a bad connection, which is the worst time to discover it.
+#
+# ⛔ THE DOCKERFILE IS THE SPEC FOR THIS FILE. It does not `COPY .` — it names what it wants:
+# package*.json, server.mjs, lib, public, onchain/target/idl, devnet-mints.json, tools. Anything
+# else is dead weight. So when the Dockerfile starts copying something new, it has to be allowed
+# through here or the build breaks on a missing path.
+
+# Build artifacts, 1.7 GB of it. The image needs the IDL out of onchain/ and NOTHING else, so
+# exclude the directory's contents and then put the one needed path back.
+#
+# ⛔ `onchain` on its own would NOT work: excluding a directory by name prunes it before a later
+# `!` can reach inside, so the re-include below would silently do nothing and
+# `COPY onchain/target/idl` would fail. The `/*` form matches each child individually, which is
+# what makes the exception possible. Keep both halves of each pair.
+onchain/*
+!onchain/target
+onchain/target/*
+!onchain/target/idl
+
+# Installed in the image by `npm ci`, and these are macOS-native builds — shipping them would
+# overwrite correct linux binaries with ones that cannot run.
+node_modules
+onchain/node_modules
+
+# 392 MB of history. The commit is passed in as the GIT_SHA build arg instead.
+.git
+.gitignore
+
+# Runtime state. The container mounts a Fly volume at DATA_DIR=/data; a local copy would be shadowed
+# by the mount anyway, and it can hold real user data that has no business in an image layer.
+data
+
+# ⛔ Secrets must never enter an image: layers are readable by anyone who can pull it, and deleting
+# a file in a later layer does not remove it from the earlier one. Fly secrets are injected as env.
+.env
+.env.*
+*.pem
+*.key
+si-vault-key.json
+**/id.json
+
+# Not used at runtime: the deploy scripts themselves, CI config, and the on-chain test harness.
+scripts
+.github
+
+# Local noise.
+*.log
+.DS_Store
+**/.DS_Store
+npm-debug.log*
+.vscode
+.idea

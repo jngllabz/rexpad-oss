@@ -1,0 +1,23 @@
+[toolchain]
+# ⛔ PINNED, BECAUSE AN EMPTY [toolchain] MAKES THE VERIFIABLE BUILD IMPOSSIBLE. With lto = "fat",
+# codegen-units = 1 and strip = true in the release profile, the bytes of the .so depend on the
+# exact compiler that produced them — so "compile this source and check the hash matches what is
+# deployed" cannot be answered at all unless the compiler is part of the source. That check is the
+# only thing that turns a review of this repository into a statement about the program actually
+# running on mainnet, and the auditors flagged that they could not run it.
+#
+# These are the versions the current artifacts were built with. Changing either changes the digest,
+# which is the point: it should be a deliberate act recorded in a commit.
+anchor_version = "1.0.2"
+solana_version = "3.1.10"
+[features]
+resolution = true
+skip-lint = false
+[programs.localnet]
+rexpad = "2zdwHaCrsXMaCrP3pa14mKrUogyo7m2UMMtECYJ4QA7E"
+rexhook = "9YnrpwYYhzKAqz25PncsafkGptc2CZUJsFZRcN5G1hrB"
+[provider]
+cluster = "localnet"
+wallet = "~/.config/solana/id.json"
+[scripts]
+test = "node tests/rexpad.test.mjs"
